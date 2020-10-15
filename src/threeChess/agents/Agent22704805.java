@@ -10,7 +10,7 @@ public class Agent22704805 extends Agent {
 
     public Position[] playMove(Board board) {
         int iterations = 0; // change to time (limit of 10 seconds? etc)
-        int max_iterations = 40;
+        int max_iterations = 40; // EXPERIMENT WITH 
         
 
         // code to jump to child's child's node and set as root (need to check if that root has been visited before though),
@@ -18,20 +18,18 @@ public class Agent22704805 extends Agent {
 
         Node root = new Node(board, null);
         root.populateChildren();
-        System.out.println(root.children.size());
+        //System.out.println(root.children.size());
 
         while (iterations < max_iterations)
         {
             iterations++;
             Node current_node = root;
             Node leaf = selectChild(current_node);
-            boolean wonGame = simulateGame(leaf);
-            
-            
-            
-
+            Colour winner = simulateGame(leaf);
+            backPropagate(leaf, root, winner);
         }
 
+        Node best_move = selectBestNode();
         return null;
     }
 
@@ -69,7 +67,7 @@ public class Agent22704805 extends Agent {
      * perform random rollout from new unvisited node
      * @param start
      */
-    public boolean simulateGame(Node start)
+    public Colour simulateGame(Node start)
     {
         Board current = Node.cloneBoard(start.state);
         ArrayList<Position[]> all_moves;
@@ -96,7 +94,29 @@ public class Agent22704805 extends Agent {
         }
 
 
-        return current.getWinner() == start.colour;
+        return current.getWinner();
+    }
+
+    /**
+     * back propagates result of match by updating win ratio and number of visits
+     * @param start
+     * @param root
+     * @param wonMatch
+     */
+    public void backPropagate(Node start, Node root, Colour winner)
+    {
+        Node current = start;
+        while (current != root.parent)
+        {
+            current.num_visits++;
+            if (current.colour == winner) current.num_wins++;
+            current = current.parent;
+        }
+    }
+
+    public Node selectBestNode()
+    {
+        return null;
     }
 
     public String toString() {

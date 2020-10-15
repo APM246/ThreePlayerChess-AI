@@ -14,7 +14,7 @@ public class Node {
     public int num_wins;
     public Board state;
     public ArrayList<Node> children;
-    public final int initial_capacity = 31; // idk?
+    public static final int INITIAL_CAPACITY = 31; // idk?
     public final Colour colour;
     private HashSet<ArrayList<Position>> map; // integer stores position of move in children ArrayList (REMOVE?)
     public Node parent;
@@ -24,7 +24,7 @@ public class Node {
     {
         this.state = cloneBoard(state); // maybe don't need clone here since clone() used in move() and populateChildren()
         colour = state.getTurn();
-        children = new ArrayList<Node>(initial_capacity);
+        children = new ArrayList<Node>(INITIAL_CAPACITY);
         map = new HashSet();
         this.parent = parent;
         has_populated_children = false;
@@ -112,6 +112,12 @@ public class Node {
         }
     }
 
+    /**
+     * find all legal moves for a particular piece on the board
+     * @param position
+     * @param state
+     * @return
+     */
     public static ArrayList<Position[]> getLegalMovesForPosition(Position position, Board state)
     {
         ArrayList<Position[]> moves = new ArrayList<Position[]>();
