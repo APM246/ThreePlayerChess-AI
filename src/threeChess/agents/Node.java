@@ -16,18 +16,20 @@ public class Node {
     public ArrayList<Node> children;
     public static final int INITIAL_CAPACITY = 31; // idk?
     public final Colour colour;
-    private HashSet<ArrayList<Position>> map; // integer stores position of move in children ArrayList (REMOVE?)
+    private HashSet<ArrayList<Position>> map; // tracks all moves (child nodes) which have been added
     public Node parent;
+    public Position[] last_move; // move that led to this node being created
     public boolean has_populated_children;
 
-    public Node(Board state, Node parent)
+    public Node(Board state, Node parent, Position[] move)
     {
         this.state = cloneBoard(state); // maybe don't need clone here since clone() used in move() and populateChildren()
         colour = state.getTurn();
         children = new ArrayList<Node>(INITIAL_CAPACITY);
-        map = new HashSet();
+        map = new HashSet<ArrayList<Position>>();
         this.parent = parent;
         has_populated_children = false;
+        last_move = move;
     }
 
 
@@ -70,7 +72,7 @@ public class Node {
                             map.add(new_move);
                             Board new_state = cloneBoard(state);
                             new_state.move(position, new_position);
-                            Node child = new Node(new_state, this);
+                            Node child = new Node(new_state, this, new Position[] {position, new_position});
                             children.add(child);
                         }
                     }
@@ -96,7 +98,7 @@ public class Node {
                                 map.add(new_move);
                                 Board new_state = cloneBoard(state);
                                 new_state.move(position, new_position);
-                                Node child = new Node(new_state, this);
+                                Node child = new Node(new_state, this, new Position[] {position, new_position});
                                 children.add(child);
                                 position = new_position;
                             }

@@ -16,7 +16,7 @@ public class Agent22704805 extends Agent {
         // code to jump to child's child's node and set as root (need to check if that root has been visited before though),
         // use getMove()
 
-        Node root = new Node(board, null);
+        Node root = new Node(board, null, null);
         root.populateChildren();
         //System.out.println(root.children.size());
 
@@ -29,8 +29,8 @@ public class Agent22704805 extends Agent {
             backPropagate(leaf, root, winner);
         }
 
-        Node best_move = selectBestNode();
-        return null;
+        Node best_move = selectBestNode(root);
+        return best_move.last_move;
     }
 
     /**
@@ -114,9 +114,24 @@ public class Agent22704805 extends Agent {
         }
     }
 
-    public Node selectBestNode()
+    public Node selectBestNode(Node root)
     {
-        return null;
+        Iterator<Node> iterator = root.children.iterator();
+        double max = -1;
+        Node best_node = null;
+
+        while (iterator.hasNext())
+        {
+            Node node = iterator.next();
+            double win_percentage = ((double) node.num_wins)/((double) node.num_visits);
+            if (win_percentage > max)
+            {
+                max = win_percentage;
+                best_node = node;
+            }
+        }
+
+        return best_node;
     }
 
     public String toString() {
