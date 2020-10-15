@@ -17,7 +17,7 @@ public class Node {
     public final int initial_capacity = 31; // idk?
     public final Colour colour;
     private HashSet<ArrayList<Position>> map; // integer stores position of move in children ArrayList (REMOVE?)
-    private Node parent;
+    public Node parent;
     public boolean has_populated_children;
 
     public Node(Board state, Node parent)
@@ -31,7 +31,7 @@ public class Node {
     }
 
 
-    private Board cloneBoard(Board board)
+    public static Board cloneBoard(Board board)
     {
         try
         {
@@ -67,9 +67,7 @@ public class Node {
         
                         if (!map.contains(new_move) && state.isLegalMove(position, new_position))
                         {
-                            ArrayList<Position> move = new ArrayList<Position>(); 
-                            move.add(position); move.add(new_position);
-                            map.add(move);
+                            map.add(new_move);
                             Board new_state = cloneBoard(state);
                             new_state.move(position, new_position);
                             Node child = new Node(new_state, this);
@@ -95,9 +93,7 @@ public class Node {
 
                             if (!map.contains(new_move) && state.isLegalMove(position, new_position))
                             {
-                                ArrayList<Position> move = new ArrayList<Position>(); 
-                                move.add(position); move.add(new_position);
-                                map.add(move);
+                                map.add(new_move);
                                 Board new_state = cloneBoard(state);
                                 new_state.move(position, new_position);
                                 Node child = new Node(new_state, this);
@@ -114,5 +110,65 @@ public class Node {
                 }
             }
         }
+    }
+
+    public static ArrayList<Position[]> getLegalMovesForPosition(Position position, Board state)
+    {
+        ArrayList<Position[]> moves = new ArrayList<Position[]>();
+        Piece piece = state.getPiece(position);
+        Direction[][] steps = piece.getType().getSteps();
+        int num_steps = piece.getType().getStepReps();
+        HashSet<ArrayList<Position>> list_of_moves = new HashSet<ArrayList<Position>>();
+            
+        if (num_steps == 1)
+        {
+            for (Direction[] step: steps)
+            {
+                try 
+                { 
+                    Position new_position = state.step(piece, step, position); 
+                    ArrayList<Position> new_move = new ArrayList<Position>(); 
+                    new_move.add(position); new_move.add(new_position);
+        
+                    if (!list_of_moves.contains(new_move) && state.isLegalMove(position, new_position))
+                    {
+                        list_of_moves.add(new_move);
+                        moves.add(new Position[] {position, new_position});
+                    }
+                }
+                catch (Exception e) {}
+            }
+        }
+
+        else 
+        {
+            Position original = Position.values()[position.ordinal()]; // REVERT BACK 
+            for (Direction[] step: steps)
+            {
+                for (int i = 0; i < num_steps; i++)
+                {
+                    try
+                    {
+                        Position new_position = state.step(piece, step, position);
+                        ArrayList<Position> new_move = new ArrayList<Position>(); 
+                        new_move.add(position); new_move.add(new_position);
+
+                        if (!list_of_moves.contains(new_move) && state.isLegalMove(position, new_position))
+                        {
+                            list_of_moves.add(new_move);
+                            moves.add(new Position[] {position, new_position});
+                            position = new_position;
+                        }
+                        else break;
+                    }
+                        
+                    catch (Exception e) {break;} // moved off board 
+                }
+
+                position = original;
+            }
+        }
+        
+        return moves;
     }
 }
