@@ -16,12 +16,6 @@ public class Agent22704805 extends Agent {
         root.populateChildren();
         //System.out.println(root.children.size());
 
-        try {
-        Position wow = root.state.step(new Piece(PieceType.QUEEN, root.colour), new Direction[] {Direction.FORWARD, Direction.FORWARD}, Position.get(root.colour, 2, 3));
-        System.out.println(Position.get(root.colour, 2, 3) + "->" + wow.toString());
-        }
-        catch(Exception e) {}
-
         while (iterations < max_iterations)
         {
             iterations++;
