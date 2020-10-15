@@ -16,6 +16,12 @@ public class Agent22704805 extends Agent {
         root.populateChildren();
         //System.out.println(root.children.size());
 
+        try {
+        Position wow = root.state.step(new Piece(PieceType.QUEEN, root.colour), new Direction[] {Direction.FORWARD, Direction.FORWARD}, Position.get(root.colour, 2, 3));
+        System.out.println(Position.get(root.colour, 2, 3) + "->" + wow.toString());
+        }
+        catch(Exception e) {}
+
         while (iterations < max_iterations)
         {
             iterations++;
@@ -65,7 +71,7 @@ public class Agent22704805 extends Agent {
     }
 
     /**
-     * select child to explore using Upper Confidence Bound algorithm (selection policy)
+     * recursively select child node using Upper Confidence Bound algorithm (selection policy) until leaf node reached
      */
     public Node selectChild(Node parent)
     {
@@ -78,9 +84,13 @@ public class Agent22704805 extends Agent {
         return null;
     }
 
+    /**
+     * perform random rollout from new unvisited node
+     * @param start
+     */
     public void simulateGame(Node start)
     {
-        
+
     }
 
     public String toString() {

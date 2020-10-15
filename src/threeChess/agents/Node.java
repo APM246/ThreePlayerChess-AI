@@ -15,7 +15,7 @@ public class Node {
     public Board state;
     public ArrayList<Node> children;
     public final int initial_capacity = 31; // idk?
-    private final Colour colour;
+    public final Colour colour;
     private HashSet<ArrayList<Position>> map; // integer stores position of move in children ArrayList (REMOVE?)
     private Node parent;
     public boolean has_populated_children;
