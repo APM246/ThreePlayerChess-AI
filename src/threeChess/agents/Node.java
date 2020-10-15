@@ -17,15 +17,16 @@ public class Node {
     public ArrayList<Node> children;
     public final int initial_capacity = 31; // idk?
     private final Colour colour;
-    private HashMap<ArrayList<Position>, Integer> map; // integer stores position of move in children ArrayList
+    private HashSet<ArrayList<Position>> map; // integer stores position of move in children ArrayList (REMOVE?)
 
     public Node(Board state)
     {
         this.state = cloneBoard(state); // maybe don't need clone here since clone() used in move() and populateChildren()
         colour = state.getTurn();
         children = new ArrayList<Node>(initial_capacity);
-        populateChildren();
+        map = new HashSet();
     }
+
 
     private Board cloneBoard(Board board)
     {
@@ -40,7 +41,7 @@ public class Node {
         }
     }
 
-    private void populateChildren()
+    public void populateChildren()
     {
         Set<Position> positions = state.getPositions(colour);
 
@@ -57,15 +58,22 @@ public class Node {
                     try 
                     { 
                         Position new_position = state.step(piece, step, position); 
-                        if (state.isLegalMove(position, new_position))
+                        ArrayList<Position> new_move = new ArrayList<Position>(); 
+                        new_move.add(position); new_move.add(new_position);
+        
+                        if (!map.contains(new_move) && state.isLegalMove(position, new_position))
                         {
+                            ArrayList<Position> move = new ArrayList<Position>(); 
+                            move.add(position); move.add(new_position);
+                            map.add(move);
                             Board new_state = cloneBoard(state);
                             new_state.move(position, new_position);
                             Node child = new Node(new_state);
                             children.add(child);
+                            System.out.println(position.getRow() + "," + position.getColumn());
                         }
                     }
-                    catch (Exception e) {e.printStackTrace();}
+                    catch (Exception e) {}
                 }
             }
 
@@ -79,12 +87,19 @@ public class Node {
                         try
                         {
                             Position new_position = state.step(piece, step, position);
-                            if (state.isLegalMove(position, new_position))
+                            ArrayList<Position> new_move = new ArrayList<Position>(); 
+                            new_move.add(position); new_move.add(new_position);
+
+                            if (!map.contains(new_move) && state.isLegalMove(position, new_position))
                             {
+                                ArrayList<Position> move = new ArrayList<Position>(); 
+                                move.add(position); move.add(new_position);
+                                map.add(move);
                                 Board new_state = cloneBoard(state);
                                 new_state.move(position, new_position);
                                 Node child = new Node(new_state);
                                 children.add(child);
+                                System.out.println(position.getRow() + "," + position.getColumn());
                                 position = new_position;
                             }
                             else break;
