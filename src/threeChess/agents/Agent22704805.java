@@ -13,7 +13,7 @@ public class Agent22704805 extends Agent {
 
     public Position[] playMove(Board board) {
         int iterations = 0; // change to time (limit of 10 seconds? etc)
-        int max_iterations = 40; // EXPERIMENT WITH 
+        int max_iterations = 600; // EXPERIMENT WITH 
         
 
         // code to jump to child's child's node and set as root (need to check if that root has been visited before though),
@@ -29,25 +29,26 @@ public class Agent22704805 extends Agent {
         }
         else
         {
-            for (int i = 1; i >= 0; i--)
+            for (int i = 2; i > 0; i--)
             {
                 Position[] move = board.getMove(move_count - i);
                 ArrayList<Position> move_arr = new ArrayList<Position>();
                 move_arr.add(move[0]); move_arr.add(move[1]);
+                if (!root.has_populated_children) root.populateChildren();
+                System.out.println("Size is: " + root.children.size());
                 Node node = root.move_node_map.get(move_arr);
-                if (!node.has_populated_children) node.populateChildren();
                 root = node;
             }
         }
 
+        if (!root.has_populated_children) root.populateChildren();
         //System.out.println(root.children.size());
 
         // Monte Carlo Tree Search
         while (iterations < max_iterations)
         {
             iterations++;
-            Node current_node = root;
-            Node leaf = selectChild(current_node);
+            Node leaf = selectChild(root);
             Colour winner = simulateGame(leaf);
             backPropagate(leaf, root, winner);
         }

@@ -86,7 +86,8 @@ public class Node {
 
             else 
             {
-                Position original = Position.values()[position.ordinal()]; // REVERT BACK 
+                Position original_position = Position.values()[position.ordinal()]; // REVERT BACK 
+                Board original_state = cloneBoard(state);
                 for (Direction[] step: steps)
                 {
                     for (int i = 0; i < num_steps; i++)
@@ -101,6 +102,7 @@ public class Node {
                             {
                                 map.add(new_move);
                                 Board new_state = cloneBoard(state);
+                                state.move(position, new_position);
                                 new_state.move(position, new_position);
                                 Node child = new Node(new_state, this, new Position[] {position, new_position});
                                 children.add(child);
@@ -113,7 +115,8 @@ public class Node {
                         catch (Exception e) {break;} // moved off board 
                     }
 
-                    position = original;
+                    position = original_position;
+                    state = original_state;
                 }
             }
         }
