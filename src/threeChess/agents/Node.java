@@ -12,19 +12,22 @@ public class Node {
 
     public int num_visits;
     public int num_wins;
-    public double win_ratio;
     public Board state;
     public ArrayList<Node> children;
     public final int initial_capacity = 31; // idk?
     private final Colour colour;
     private HashSet<ArrayList<Position>> map; // integer stores position of move in children ArrayList (REMOVE?)
+    private Node parent;
+    public boolean has_populated_children;
 
-    public Node(Board state)
+    public Node(Board state, Node parent)
     {
         this.state = cloneBoard(state); // maybe don't need clone here since clone() used in move() and populateChildren()
         colour = state.getTurn();
         children = new ArrayList<Node>(initial_capacity);
         map = new HashSet();
+        this.parent = parent;
+        has_populated_children = false;
     }
 
 
@@ -43,6 +46,7 @@ public class Node {
 
     public void populateChildren()
     {
+        has_populated_children = true;
         Set<Position> positions = state.getPositions(colour);
 
         for (Position position: positions)
@@ -68,9 +72,8 @@ public class Node {
                             map.add(move);
                             Board new_state = cloneBoard(state);
                             new_state.move(position, new_position);
-                            Node child = new Node(new_state);
+                            Node child = new Node(new_state, this);
                             children.add(child);
-                            System.out.println(position.getRow() + "," + position.getColumn());
                         }
                     }
                     catch (Exception e) {}
@@ -97,9 +100,8 @@ public class Node {
                                 map.add(move);
                                 Board new_state = cloneBoard(state);
                                 new_state.move(position, new_position);
-                                Node child = new Node(new_state);
+                                Node child = new Node(new_state, this);
                                 children.add(child);
-                                System.out.println(position.getRow() + "," + position.getColumn());
                                 position = new_position;
                             }
                             else break;
