@@ -32,7 +32,9 @@ public class Agent22704805 extends Agent {
             for (int i = 1; i >= 0; i--)
             {
                 Position[] move = board.getMove(move_count - i);
-                Node node = root.move_node_map.get(move);
+                ArrayList<Position> move_arr = new ArrayList<Position>();
+                move_arr.add(move[0]); move_arr.add(move[1]);
+                Node node = root.move_node_map.get(move_arr);
                 if (!node.has_populated_children) node.populateChildren();
                 root = node;
             }
