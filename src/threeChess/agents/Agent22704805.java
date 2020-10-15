@@ -13,7 +13,7 @@ public class Agent22704805 extends Agent {
 
     public Position[] playMove(Board board) {
         int iterations = 0; // change to time (limit of 10 seconds? etc)
-        int max_iterations = 600; // EXPERIMENT WITH 
+        int max_iterations = 800; // EXPERIMENT WITH 
         
 
         // code to jump to child's child's node and set as root (need to check if that root has been visited before though),

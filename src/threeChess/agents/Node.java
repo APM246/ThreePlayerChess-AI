@@ -86,15 +86,14 @@ public class Node {
 
             else 
             {
-                Position original_position = Position.values()[position.ordinal()]; // REVERT BACK 
-                Board original_state = cloneBoard(state);
                 for (Direction[] step: steps)
                 {
+                    Position new_position = position;
                     for (int i = 0; i < num_steps; i++)
                     {
                         try
                         {
-                            Position new_position = state.step(piece, step, position);
+                            new_position = state.step(piece, step, new_position);
                             ArrayList<Position> new_move = new ArrayList<Position>(); 
                             new_move.add(position); new_move.add(new_position);
 
@@ -102,21 +101,16 @@ public class Node {
                             {
                                 map.add(new_move);
                                 Board new_state = cloneBoard(state);
-                                state.move(position, new_position);
                                 new_state.move(position, new_position);
                                 Node child = new Node(new_state, this, new Position[] {position, new_position});
                                 children.add(child);
                                 move_node_map.put(new_move, child);
-                                position = new_position;
                             }
                             else break;
                         }
                         
                         catch (Exception e) {break;} // moved off board 
                     }
-
-                    position = original_position;
-                    state = original_state;
                 }
             }
         }
@@ -158,14 +152,14 @@ public class Node {
 
         else 
         {
-            Position original = Position.values()[position.ordinal()]; // REVERT BACK 
             for (Direction[] step: steps)
             {
+                Position new_position = position;
                 for (int i = 0; i < num_steps; i++)
                 {
                     try
                     {
-                        Position new_position = state.step(piece, step, position);
+                        new_position = state.step(piece, step, new_position);
                         ArrayList<Position> new_move = new ArrayList<Position>(); 
                         new_move.add(position); new_move.add(new_position);
 
@@ -173,15 +167,12 @@ public class Node {
                         {
                             list_of_moves.add(new_move);
                             moves.add(new Position[] {position, new_position});
-                            position = new_position;
                         }
                         else break;
                     }
                         
                     catch (Exception e) {break;} // moved off board 
                 }
-
-                position = original;
             }
         }
         
