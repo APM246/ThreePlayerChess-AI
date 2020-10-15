@@ -14,12 +14,14 @@ public class Node {
     public int num_wins;
     public Board state;
     public ArrayList<Node> children;
-    public static final int INITIAL_CAPACITY = 31; // idk?
     public final Colour colour;
-    private HashSet<ArrayList<Position>> map; // tracks all moves (child nodes) which have been added
+    private HashSet<ArrayList<Position>> map; // NEED BETTER NAME, tracks all moves (child nodes) which have been added
     public Node parent;
     public Position[] last_move; // move that led to this node being created
     public boolean has_populated_children;
+    public HashMap<ArrayList<Position>, Node> move_node_map; // maps a particular move to its resulting node
+
+    public static final int INITIAL_CAPACITY = 31; // idk?
 
     public Node(Board state, Node parent, Position[] move)
     {
@@ -30,6 +32,7 @@ public class Node {
         this.parent = parent;
         has_populated_children = false;
         last_move = move;
+        move_node_map = new HashMap<>(20);
     }
 
 
@@ -74,6 +77,7 @@ public class Node {
                             new_state.move(position, new_position);
                             Node child = new Node(new_state, this, new Position[] {position, new_position});
                             children.add(child);
+                            move_node_map.put(new_move, child);
                         }
                     }
                     catch (Exception e) {}
@@ -100,6 +104,7 @@ public class Node {
                                 new_state.move(position, new_position);
                                 Node child = new Node(new_state, this, new Position[] {position, new_position});
                                 children.add(child);
+                                move_node_map.put(new_move, child);
                                 position = new_position;
                             }
                             else break;

@@ -7,6 +7,9 @@ import java.util.*;
 public class Agent22704805 extends Agent {
 
     static final double TEMPERATURE = Math.sqrt(2);
+    private Node root;
+
+    public Agent22704805(){} // argumentless constructor
 
     public Position[] playMove(Board board) {
         int iterations = 0; // change to time (limit of 10 seconds? etc)
@@ -16,10 +19,28 @@ public class Agent22704805 extends Agent {
         // code to jump to child's child's node and set as root (need to check if that root has been visited before though),
         // use getMove()
 
-        Node root = new Node(board, null, null);
-        root.populateChildren();
+        int move_count = board.getMoveCount();
+
+        // setting up root for first time
+        if (move_count < 3)
+        {
+            root = new Node(board, null, null);
+            root.populateChildren();
+        }
+        else
+        {
+            for (int i = 1; i >= 0; i--)
+            {
+                Position[] move = board.getMove(move_count - i);
+                Node node = root.move_node_map.get(move);
+                if (!node.has_populated_children) node.populateChildren();
+                root = node;
+            }
+        }
+
         //System.out.println(root.children.size());
 
+        // Monte Carlo Tree Search
         while (iterations < max_iterations)
         {
             iterations++;
@@ -30,6 +51,7 @@ public class Agent22704805 extends Agent {
         }
 
         Node best_move = selectBestNode(root);
+        root = best_move;
         return best_move.last_move;
     }
 
