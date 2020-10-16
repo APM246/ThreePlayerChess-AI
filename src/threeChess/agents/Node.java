@@ -89,11 +89,13 @@ public class Node {
                 for (Direction[] step: steps)
                 {
                     Position new_position = position;
+                    boolean reverse = false; // when entering another player's part of the board, reverse the directions
                     for (int i = 0; i < num_steps; i++)
                     {
                         try
                         {
-                            new_position = state.step(piece, step, new_position);
+                            new_position = state.step(piece, step, new_position, reverse);
+                            if (new_position.getColour() != position.getColour()) reverse = true;
                             ArrayList<Position> new_move = new ArrayList<Position>(); 
                             new_move.add(position); new_move.add(new_position);
 

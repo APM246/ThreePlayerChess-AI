@@ -13,7 +13,7 @@ public class Agent22704805 extends Agent {
 
     public Position[] playMove(Board board) {
         int iterations = 0; // change to time (limit of 10 seconds? etc)
-        int max_iterations = 800; // EXPERIMENT WITH 
+        int max_iterations = 1000; // EXPERIMENT WITH 
         
 
         // code to jump to child's child's node and set as root (need to check if that root has been visited before though),
@@ -35,7 +35,7 @@ public class Agent22704805 extends Agent {
                 ArrayList<Position> move_arr = new ArrayList<Position>();
                 move_arr.add(move[0]); move_arr.add(move[1]);
                 if (!root.has_populated_children) root.populateChildren();
-                System.out.println("Size is: " + root.children.size());
+                //System.out.println("Size is: " + root.children.size());
                 Node node = root.move_node_map.get(move_arr);
                 root = node;
             }
