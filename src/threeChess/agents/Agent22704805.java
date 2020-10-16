@@ -8,17 +8,17 @@ public class Agent22704805 extends Agent {
 
     static final double TEMPERATURE = Math.sqrt(2);
     private Node root;
+    private long time;
+    private int num_moves = 0;
 
     public Agent22704805(){} // argumentless constructor
 
     public Position[] playMove(Board board) {
+        num_moves++;
+        long current_time = System.currentTimeMillis();
         int iterations = 0; // change to time (limit of 10 seconds? etc)
         int max_iterations = 800; // EXPERIMENT WITH 
         
-
-        // code to jump to child's child's node and set as root (need to check if that root has been visited before though),
-        // use getMove()
-
         int move_count = board.getMoveCount();
 
         // setting up root for first time
@@ -27,6 +27,7 @@ public class Agent22704805 extends Agent {
             root = new Node(board, null, null);
             root.populateChildren();
         }
+        // move root using last 2 moves
         else
         {
             for (int i = 2; i > 0; i--)
@@ -35,14 +36,12 @@ public class Agent22704805 extends Agent {
                 ArrayList<Position> move_arr = new ArrayList<Position>();
                 move_arr.add(move[0]); move_arr.add(move[1]);
                 if (!root.has_populated_children) root.populateChildren();
-                //System.out.println("Size is: " + root.children.size());
                 Node node = root.move_node_map.get(move_arr);
                 root = node;
             }
         }
 
         if (!root.has_populated_children) root.populateChildren();
-        //System.out.println(root.children.size());
 
         // Monte Carlo Tree Search
         while (iterations < max_iterations)
@@ -55,6 +54,8 @@ public class Agent22704805 extends Agent {
 
         Node best_move = selectBestNode(root);
         root = best_move;
+        time += System.currentTimeMillis() - current_time;
+        System.out.println("AVERAGE TIME IS: " + time/num_moves);
         return best_move.last_move;
     }
 

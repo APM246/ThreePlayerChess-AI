@@ -25,7 +25,7 @@ public class Node {
 
     public Node(Board state, Node parent, Position[] move)
     {
-        this.state = cloneBoard(state); // maybe don't need clone here since clone() used in move() and populateChildren()
+        this.state = state;
         colour = state.getTurn();
         children = new ArrayList<Node>(INITIAL_CAPACITY);
         map = new HashSet<ArrayList<Position>>();
