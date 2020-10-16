@@ -15,7 +15,6 @@ public class Node {
     public Board state;
     public ArrayList<Node> children;
     public final Colour colour;
-    private HashSet<ArrayList<Position>> map; // NEED BETTER NAME, tracks all moves (child nodes) which have been added
     public Node parent;
     public Position[] last_move; // move that led to this node being created
     public boolean has_populated_children;
@@ -28,7 +27,6 @@ public class Node {
         this.state = state;
         colour = state.getTurn();
         children = new ArrayList<Node>(INITIAL_CAPACITY);
-        map = new HashSet<ArrayList<Position>>();
         this.parent = parent;
         has_populated_children = false;
         last_move = move;
@@ -70,9 +68,8 @@ public class Node {
                         ArrayList<Position> new_move = new ArrayList<Position>(); 
                         new_move.add(position); new_move.add(new_position);
         
-                        if (!map.contains(new_move) && state.isLegalMove(position, new_position))
+                        if (!move_node_map.containsKey(new_move) && state.isLegalMove(position, new_position))
                         {
-                            map.add(new_move);
                             Board new_state = cloneBoard(state);
                             new_state.move(position, new_position);
                             Node child = new Node(new_state, this, new Position[] {position, new_position});
@@ -99,9 +96,8 @@ public class Node {
                             ArrayList<Position> new_move = new ArrayList<Position>(); 
                             new_move.add(position); new_move.add(new_position);
 
-                            if (!map.contains(new_move) && state.isLegalMove(position, new_position))
+                            if (!move_node_map.containsKey(new_move) && state.isLegalMove(position, new_position))
                             {
-                                map.add(new_move);
                                 Board new_state = cloneBoard(state);
                                 new_state.move(position, new_position);
                                 Node child = new Node(new_state, this, new Position[] {position, new_position});
