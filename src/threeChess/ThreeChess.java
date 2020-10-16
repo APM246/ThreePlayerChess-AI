@@ -103,7 +103,7 @@ public class ThreeChess{
       int n = bots.length;
       for(int g = 0; g<numGames; g++){
         int[] players = {random.nextInt(n), random.nextInt(n), random.nextInt(n)};
-        int[] res = play(bots[players[0]],bots[players[1]],bots[players[2]], timeLimit, logger, displayOn);
+        int[] res = play(bots[0],bots[2],bots[1], timeLimit, logger, displayOn);
         for(int o = 0; o<3;o++)scoreboard.get(bots[players[o]]).update(res[o]);
       }
     }
@@ -237,7 +237,7 @@ public class ThreeChess{
    * Run program with parameter "manual" for a game with moves added in the command line, "cheat" to ignore all rules, and no parameters to run a tournament between agents listed in bots.
    **/
   public static void main(String[] args){
-    Agent[] bots = {new GUIAgent(), new GUIAgent(), new Agent22704805()};
+    Agent[] bots = {new RandomAgent(), new RandomAgent(), new Agent22704805()};
     if(args.length > 0 && args[0].equals("manual")){
       bots = new Agent[] {new ManualAgent("A"), new ManualAgent("B"), new ManualAgent("C")};
       tournament(bots,60,0,true, null);
@@ -249,6 +249,6 @@ public class ThreeChess{
     else if (args.length > 0 && args[0].equals("cheat")){
       playCheat();
     }
-    else tournament(bots,300,0,true,null);
+    else tournament(bots,300,10,true,null);
   }
 }

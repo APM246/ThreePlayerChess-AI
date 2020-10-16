@@ -13,7 +13,7 @@ public class Agent22704805 extends Agent {
 
     public Position[] playMove(Board board) {
         int iterations = 0; // change to time (limit of 10 seconds? etc)
-        int max_iterations = 1000; // EXPERIMENT WITH 
+        int max_iterations = 800; // EXPERIMENT WITH 
         
 
         // code to jump to child's child's node and set as root (need to check if that root has been visited before though),
@@ -134,7 +134,7 @@ public class Agent22704805 extends Agent {
         while (current != root.parent)
         {
             current.num_visits++;
-            if (current.colour == winner) current.num_wins++;
+            if (Colour.values()[(current.colour.ordinal() + 2) % 3] == winner) current.num_wins++;
             current = current.parent;
         }
     }
