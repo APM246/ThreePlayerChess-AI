@@ -103,7 +103,7 @@ public class ThreeChess{
       int n = bots.length;
       for(int g = 0; g<numGames; g++){
         int[] players = {random.nextInt(n), random.nextInt(n), random.nextInt(n)};
-        int[] res = play(bots[0],bots[2],bots[1], timeLimit, logger, displayOn);
+        int[] res = play(bots[0],bots[1],bots[2], timeLimit, logger, displayOn);
         for(int o = 0; o<3;o++)scoreboard.get(bots[players[o]]).update(res[o]);
       }
     }
@@ -249,6 +249,6 @@ public class ThreeChess{
     else if (args.length > 0 && args[0].equals("cheat")){
       playCheat();
     }
-    else tournament(bots,300,10,true,null);
+    else tournament(bots,200,15,true,null);
   }
 }
