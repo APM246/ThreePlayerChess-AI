@@ -9,15 +9,12 @@ public class Agent22704805 extends Agent {
     static final double TEMPERATURE = Math.sqrt(2);
     private Node root;
     private long time;
-    private int num_moves = 0;
 
     public Agent22704805(){} // argumentless constructor
 
     public Position[] playMove(Board board) {
-        num_moves++;
-        long current_time = System.currentTimeMillis();
         int iterations = 0; // change to time (limit of 10 seconds? etc)
-        int max_iterations = 800; // EXPERIMENT WITH 
+        int max_iterations = 900; // EXPERIMENT WITH, previusly 110
         
         int move_count = board.getMoveCount();
 
@@ -39,9 +36,10 @@ public class Agent22704805 extends Agent {
                 Node node = root.move_node_map.get(move_arr);
                 root = node;
             }
+
+            if (!root.has_populated_children) root.populateChildren();
         }
 
-        if (!root.has_populated_children) root.populateChildren();
 
         // Monte Carlo Tree Search
         while (iterations < max_iterations)
@@ -54,8 +52,7 @@ public class Agent22704805 extends Agent {
 
         Node best_move = selectBestNode(root);
         root = best_move;
-        time += System.currentTimeMillis() - current_time;
-        System.out.println("AVERAGE TIME IS: " + time/num_moves);
+        //if (move_count < 3) return new Position[] {Position.BG1, Position.BF3};
         return best_move.last_move;
     }
 
@@ -85,6 +82,7 @@ public class Agent22704805 extends Agent {
             }
 
             current_node = current_node.children.get(best_child);
+            if (current_node.state.gameOver()) return current_node; // terminal state reached
             if (!current_node.has_populated_children) current_node.populateChildren(); 
         }
     }
