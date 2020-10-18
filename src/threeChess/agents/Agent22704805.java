@@ -7,15 +7,12 @@ import java.util.*;
 public class Agent22704805 extends Agent {
 
     static final double TEMPERATURE = Math.sqrt(2);
+    private long MAX_TIME;
     private Node root;
-    private long time;
 
-    public Agent22704805(){} // argumentless constructor
+    public Agent22704805() {}
 
     public Position[] playMove(Board board) {
-        int iterations = 0; // change to time (limit of 10 seconds? etc)
-        int max_iterations = 900; // EXPERIMENT WITH, previusly 110
-        
         int move_count = board.getMoveCount();
 
         // setting up root for first time
@@ -23,6 +20,7 @@ public class Agent22704805 extends Agent {
         {
             root = new Node(board, null, null);
             root.populateChildren();
+            MAX_TIME = board.getTimeLeft(root.colour)/25; // anytime algorithm, limit set to 1/20th of total time given for player 
         }
         // move root using last 2 moves
         else
@@ -40,16 +38,17 @@ public class Agent22704805 extends Agent {
             if (!root.has_populated_children) root.populateChildren();
         }
 
-
+        int num_iterations = 0;
         // Monte Carlo Tree Search
-        while (iterations < max_iterations)
+        long current_time = System.currentTimeMillis();
+        while (System.currentTimeMillis() - current_time < MAX_TIME)
         {
-            iterations++;
             Node leaf = selectChild(root);
             Colour winner = simulateGame(leaf);
             backPropagate(leaf, root, winner);
+            num_iterations++;
         }
-
+        System.out.println("number: " + num_iterations);
         Node best_move = selectBestNode(root);
         root = best_move;
         //if (move_count < 3) return new Position[] {Position.BG1, Position.BF3};
@@ -164,6 +163,5 @@ public class Agent22704805 extends Agent {
 
     public void finalBoard(Board finalBoard) {
 
-    }
-    
+    }   
 }

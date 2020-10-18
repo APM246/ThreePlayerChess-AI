@@ -112,7 +112,7 @@ public class ThreeChess{
     Statistics[] results = (Statistics[]) scoreboard.values().toArray(new Statistics[0]);
     Arrays.sort(results);
     int rank = 1;
-    for(Statistics stat:results) logger.println(rank++ +"\t"+stat.agent+"\t\t"+stat.won+"\t"+stat.lost+"\t"+stat.played+"\t"+stat.average()+"\n");
+    for(Statistics stat:results) logger.println(rank++ +"\t"+stat.agent+"\t"+stat.won+"\t"+stat.lost+"\t"+stat.played+"\t"+stat.average()+"\n");
   }
   
   /**
@@ -236,7 +236,7 @@ public class ThreeChess{
    * Run program with parameter "manual" for a game with moves added in the command line, "cheat" to ignore all rules, and no parameters to run a tournament between agents listed in bots.
    **/
   public static void main(String[] args){
-    Agent[] bots = {new GUIAgent(), new GUIAgent(), new Agent22704805()};
+    Agent[] bots = {new GUIAgent(), new Agent22704805(), new GUIAgent()};
     if(args.length > 0 && args[0].equals("manual")){
       bots = new Agent[] {new ManualAgent("A"), new ManualAgent("B"), new ManualAgent("C")};
       tournament(bots,60,0,true, null);
@@ -248,6 +248,6 @@ public class ThreeChess{
     else if (args.length > 0 && args[0].equals("cheat")){
       playCheat();
     }
-    else tournament(bots,100,0,true,null);
+    else tournament(bots,10,0,true,null);
   }
 }
