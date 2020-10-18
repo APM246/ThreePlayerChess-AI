@@ -20,7 +20,7 @@ public class Node {
     public boolean has_populated_children;
     public HashMap<ArrayList<Position>, Node> move_node_map; // maps a particular move to its resulting node
 
-    public static final int INITIAL_CAPACITY = 31; // idk?
+    public static final int INITIAL_CAPACITY = 40; // empirically tested
 
     public Node(Board state, Node parent, Position[] move)
     {
@@ -30,7 +30,7 @@ public class Node {
         this.parent = parent;
         has_populated_children = false;
         last_move = move;
-        move_node_map = new HashMap<>(20);
+        move_node_map = new HashMap<>(INITIAL_CAPACITY);
     }
 
 

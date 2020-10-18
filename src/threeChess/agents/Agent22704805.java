@@ -48,11 +48,10 @@ public class Agent22704805 extends Agent {
             backPropagate(leaf, root, winner);
             num_iterations++;
         }
+
         System.out.println("number: " + num_iterations);
-        Node best_move = selectBestNode(root);
-        root = best_move;
-        //if (move_count < 3) return new Position[] {Position.BG1, Position.BF3};
-        return best_move.last_move;
+        root = selectBestNode(root);
+        return root.last_move;
     }
 
     /**
@@ -113,9 +112,8 @@ public class Agent22704805 extends Agent {
             {
                 current.move(move[0], move[1]);
             }
-            catch (Exception e) {} // already accounted for in getLegalMovesForPosition()
+            catch (Exception e) {} // errors already accounted for in getLegalMovesForPosition()
         }
-
 
         return current.getWinner();
     }
@@ -126,14 +124,13 @@ public class Agent22704805 extends Agent {
      * @param root
      * @param wonMatch
      */
-    public void backPropagate(Node start, Node root, Colour winner)
+    public void backPropagate(Node node, Node root, Colour winner)
     {
-        Node current = start;
-        while (current != root.parent)
+        while (node != root.parent)
         {
-            current.num_visits++;
-            if (Colour.values()[(current.colour.ordinal() + 2) % 3] == winner) current.num_wins++;
-            current = current.parent;
+            node.num_visits++;
+            if (Colour.values()[(node.colour.ordinal() + 2) % 3] == winner) node.num_wins++;
+            node = node.parent;
         }
     }
 
