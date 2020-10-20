@@ -102,7 +102,8 @@ public class ThreeChess{
     else{//play randomly assigned games. Note agents may play themselves.
       int n = bots.length;
       for(int g = 0; g<numGames; g++){
-        int[] players = {random.nextInt(n), random.nextInt(n), random.nextInt(n)};
+        int player_num = random.nextInt(n);
+        int[] players = {player_num, (player_num+1)%n, (player_num+2)%3};
         int[] res = play(bots[players[0]],bots[players[1]],bots[players[2]], timeLimit, logger, displayOn);
         for(int o = 0; o<3;o++)scoreboard.get(bots[players[o]]).update(res[o]);
       }
