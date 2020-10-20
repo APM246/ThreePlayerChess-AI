@@ -45,6 +45,14 @@ public class Node {
         }
     }
 
+    /**
+     * clones Node completely, for use in random rollouts
+     */
+    public Node clone()
+    {
+        return new Node(cloneBoard(state), null, null);
+    }
+
     public void populateChildren()
     {
         has_populated_children = true;
@@ -108,70 +116,5 @@ public class Node {
                 }
             }
         }
-    }
-
-    /**
-     * find all legal moves for a particular piece on the board
-     * @param position
-     * @param state
-     * @return
-     */
-    public static ArrayList<Position[]> getLegalMovesForPosition(Position position, Board state)
-    {
-        ArrayList<Position[]> moves = new ArrayList<Position[]>();
-        Piece piece = state.getPiece(position);
-        Direction[][] steps = piece.getType().getSteps();
-        int num_steps = piece.getType().getStepReps();
-        HashSet<ArrayList<Position>> list_of_moves = new HashSet<ArrayList<Position>>();
-            
-        if (num_steps == 1)
-        {
-            for (Direction[] step: steps)
-            {
-                try 
-                { 
-                    Position new_position = state.step(piece, step, position); 
-                    ArrayList<Position> new_move = new ArrayList<Position>(); 
-                    new_move.add(position); new_move.add(new_position);
-        
-                    if (!list_of_moves.contains(new_move) && state.isLegalMove(position, new_position))
-                    {
-                        list_of_moves.add(new_move);
-                        moves.add(new Position[] {position, new_position});
-                    }
-                }
-                catch (Exception e) {}
-            }
-        }
-
-        else 
-        {
-            for (Direction[] step: steps)
-            {
-                Position new_position = position;
-                boolean reverse = false;
-                for (int i = 0; i < num_steps; i++)
-                {
-                    try
-                    {
-                        new_position = state.step(piece, step, new_position, reverse);
-                        if (new_position.getColour() != position.getColour()) reverse = true;
-                        ArrayList<Position> new_move = new ArrayList<Position>(); 
-                        new_move.add(position); new_move.add(new_position);
-
-                        if (!list_of_moves.contains(new_move) && state.isLegalMove(position, new_position))
-                        {
-                            list_of_moves.add(new_move);
-                            moves.add(new Position[] {position, new_position});
-                        }
-                        else break;
-                    }
-                        
-                    catch (Exception e) {break;} // moved off board 
-                }
-            }
-        }
-        
-        return moves;
     }
 }

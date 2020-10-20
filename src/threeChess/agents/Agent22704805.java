@@ -92,31 +92,20 @@ public class Agent22704805 extends Agent {
      */
     public Colour simulateGame(Node start)
     {
-        Board current = Node.cloneBoard(start.state);
-        ArrayList<Position[]> all_moves;
+        Node current = start.clone();
         Random random_generator = new Random();
 
-        while (!current.gameOver())
+        while (!current.state.gameOver())
         {
-            do
-            {
-                Object[] positions = current.getPositions(current.getTurn()).toArray();
-                int random_index = random_generator.nextInt(positions.length);
-                Position position = (Position) positions[random_index];
-                all_moves = Node.getLegalMovesForPosition(position, current);
-            }
-            while (all_moves.isEmpty());
-
-            int random_index = random_generator.nextInt(all_moves.size());
-            Position[] move = all_moves.get(random_index);
-            try 
-            {
-                current.move(move[0], move[1]);
-            }
-            catch (Exception e) {} // errors already accounted for in getLegalMovesForPosition()
+            if (!current.has_populated_children) current.populateChildren();
+            int random_index = random_generator.nextInt(current.move_node_map.size());
+            List<ArrayList<Position>> keys = new ArrayList<ArrayList<Position>>(current.move_node_map.keySet());
+            ArrayList<Position> move = keys.get(random_index);
+            current = current.move_node_map.get(move);
+            
         }
 
-        return current.getWinner();
+        return current.state.getWinner();
     }
 
     /**
