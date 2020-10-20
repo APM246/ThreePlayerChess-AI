@@ -61,12 +61,13 @@ public class Agent22704805 extends Agent {
     {
         while (true)
         {
-            int num_children = current_node.children.size();
             double max = -1;
-            int best_child = -1;
-            for (int i = 0; i < num_children; i++)
+            ArrayList<Position> best_child_key = null;
+            Set<ArrayList<Position>> keys = current_node.move_node_map.keySet();
+
+            for (ArrayList<Position> move: keys)
             {
-                Node child = current_node.children.get(i);
+                Node child = current_node.move_node_map.get(move);
                 if (child.num_visits == 0) return child; // new unvisited node found
 
                 // calculate UCB1 value for each child
@@ -75,11 +76,11 @@ public class Agent22704805 extends Agent {
                 if (ucb1 > max)
                 {
                     max = ucb1;
-                    best_child = i;
+                    best_child_key = move;
                 }
             }
 
-            current_node = current_node.children.get(best_child);
+            current_node = current_node.move_node_map.get(best_child_key);
             if (current_node.state.gameOver()) return current_node; // terminal state reached
             if (!current_node.has_populated_children) current_node.populateChildren(); 
         }
@@ -136,13 +137,14 @@ public class Agent22704805 extends Agent {
 
     public Node selectBestNode(Node root)
     {
-        Iterator<Node> iterator = root.children.iterator();
+        Iterator<ArrayList<Position>> iterator = root.move_node_map.keySet().iterator();
         double max = -1;
         Node best_node = null;
 
         while (iterator.hasNext())
         {
-            Node node = iterator.next();
+            ArrayList<Position> key = iterator.next();
+            Node node = root.move_node_map.get(key);
             double win_percentage = ((double) node.num_wins)/((double) node.num_visits);
             if (win_percentage > max)
             {
