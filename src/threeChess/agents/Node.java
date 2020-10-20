@@ -13,7 +13,6 @@ public class Node {
     public int num_visits;
     public int num_wins;
     public Board state;
-    public ArrayList<Node> children;
     public final Colour colour;
     public Node parent;
     public Position[] last_move; // move that led to this node being created
@@ -26,7 +25,6 @@ public class Node {
     {
         this.state = state;
         colour = state.getTurn();
-        children = new ArrayList<Node>(INITIAL_CAPACITY);
         this.parent = parent;
         has_populated_children = false;
         last_move = move;
@@ -73,7 +71,6 @@ public class Node {
                             Board new_state = cloneBoard(state);
                             new_state.move(position, new_position);
                             Node child = new Node(new_state, this, new Position[] {position, new_position});
-                            children.add(child);
                             move_node_map.put(new_move, child);
                         }
                     }
@@ -101,7 +98,6 @@ public class Node {
                                 Board new_state = cloneBoard(state);
                                 new_state.move(position, new_position);
                                 Node child = new Node(new_state, this, new Position[] {position, new_position});
-                                children.add(child);
                                 move_node_map.put(new_move, child);
                             }
                             else break;
