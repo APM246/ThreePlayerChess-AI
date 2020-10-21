@@ -8,12 +8,12 @@ public class Agent22704805 extends Agent {
 
     static final double TEMPERATURE = Math.sqrt(2);
     private long MAX_TIME;
-    private Node root;int depth;
+    private Node root;
 
     public Agent22704805() {}
 
     public Position[] playMove(Board board) {
-        int move_count = board.getMoveCount();depth=0;
+        int move_count = board.getMoveCount();
 
         // setting up root for first time
         if (move_count < 3)
@@ -44,15 +44,15 @@ public class Agent22704805 extends Agent {
 
         MAX_TIME = board.getTimeLeft(root.colour)/25; // anytime algorithm, limit set to 1/25th of time left
         // Monte Carlo Tree Search
-        long current_time = System.currentTimeMillis();double num_iterations=0;
+        long current_time = System.currentTimeMillis();
         while (System.currentTimeMillis() - current_time < MAX_TIME)
         {
             Node leaf = selectChild(root);
             Colour winner = simulateGame(leaf);
-            backPropagate(leaf, root, winner);num_iterations++;
+            backPropagate(leaf, root, winner);
         }
 
-        root = selectBestNode(root);System.out.println("woah: " + depth/num_iterations);
+        root = selectBestNode(root);
         return root.last_move;
     }
 
@@ -62,7 +62,7 @@ public class Agent22704805 extends Agent {
     public Node selectChild(Node current_node)
     {
         while (true)
-        {depth++;
+        {
             double max = -1;
             ArrayList<Position> best_child_key = null;
             Set<ArrayList<Position>> keys = current_node.move_node_map.keySet();
