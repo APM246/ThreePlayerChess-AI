@@ -20,7 +20,6 @@ public class Agent22704805 extends Agent {
         {
             root = new Node(board, null, null);
             root.populateChildren();
-            MAX_TIME = board.getTimeLeft(root.colour)/25; // anytime algorithm, limit set to 1/25th of time allocated for player
         }
         // move root using last 2 moves
         else
@@ -43,7 +42,7 @@ public class Agent22704805 extends Agent {
             if (!root.has_populated_children) root.populateChildren();
         }
 
-        int num_iterations = 0;
+        MAX_TIME = board.getTimeLeft(root.colour)/25; // anytime algorithm, limit set to 1/25th of time left
         // Monte Carlo Tree Search
         long current_time = System.currentTimeMillis();
         while (System.currentTimeMillis() - current_time < MAX_TIME)
@@ -51,10 +50,8 @@ public class Agent22704805 extends Agent {
             Node leaf = selectChild(root);
             Colour winner = simulateGame(leaf);
             backPropagate(leaf, root, winner);
-            num_iterations++;
         }
 
-        System.out.println("number: " + num_iterations);
         root = selectBestNode(root);
         return root.last_move;
     }
@@ -63,9 +60,9 @@ public class Agent22704805 extends Agent {
      * recursively select child node using Upper Confidence Bound algorithm (selection policy) until leaf node reached
      */
     public Node selectChild(Node current_node)
-    {
+    {int depth = 0;
         while (true)
-        {
+        {depth++;
             double max = -1;
             ArrayList<Position> best_child_key = null;
             Set<ArrayList<Position>> keys = current_node.move_node_map.keySet();
@@ -73,7 +70,7 @@ public class Agent22704805 extends Agent {
             for (ArrayList<Position> move: keys)
             {
                 Node child = current_node.move_node_map.get(move);
-                if (child.num_visits == 0) return child; // new unvisited node found
+                if (child.num_visits == 0) {System.out.println("depth is" + depth); return child;} // new unvisited node found
 
                 // calculate UCB1 value for each child
                 double exploration = Math.sqrt(Math.log(current_node.num_visits)/child.num_visits);
@@ -86,7 +83,7 @@ public class Agent22704805 extends Agent {
             }
 
             current_node = current_node.move_node_map.get(best_child_key);
-            if (current_node.state.gameOver()) return current_node; // terminal state reached
+            if (current_node.state.gameOver()) {System.out.println("depth is" + depth); return current_node;} // terminal state reached
             if (!current_node.has_populated_children) current_node.populateChildren(); 
         }
     }
