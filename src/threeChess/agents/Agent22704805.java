@@ -20,7 +20,7 @@ public class Agent22704805 extends Agent {
         {
             root = new Node(board, null, null);
             root.populateChildren();
-            MAX_TIME = 2000; // anytime algorithm, limit set to 2 seconds 
+            MAX_TIME = board.getTimeLeft(root.colour)/25; // anytime algorithm, limit set to 1/25th of time allocated for player
         }
         // move root using last 2 moves
         else
