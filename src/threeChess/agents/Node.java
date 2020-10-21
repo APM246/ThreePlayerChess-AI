@@ -99,7 +99,7 @@ public class Node {
                             if (intermediate_position.getColour() != position.getColour()) 
                             {
                                 // when Bishop or Queen gets to centre of board and can go other directions
-                                if (piece.getType() != PieceType.ROOK && !tried_switch)
+                                if (!tried_switch && piece.getType() != PieceType.ROOK && step.length > 1)
                                 {
                                     tried_switch = true;
                                     Direction[] new_step = new Direction[] {step[1], step[0]};
@@ -175,7 +175,7 @@ public class Node {
                         intermediate_position = state.step(piece, step, new_position, reverse);
                         if (intermediate_position.getColour() != position.getColour()) 
                         {
-                            if (piece.getType() != PieceType.ROOK && !tried_switch)
+                            if (piece.getType() != PieceType.ROOK && !tried_switch && step.length > 1)
                             {
                                 tried_switch = true;
                                 Direction[] new_step = new Direction[] {step[1], step[0]};
