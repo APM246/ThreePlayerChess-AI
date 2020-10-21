@@ -45,6 +45,20 @@ public class Node {
         }
     }
 
+    public void addChild(Position position, Position new_position) throws Exception
+    {
+        ArrayList<Position> new_move = new ArrayList<Position>(); 
+        new_move.add(position); new_move.add(new_position);
+        if (!move_node_map.containsKey(new_move) && state.isLegalMove(position, new_position))
+        {
+            Board new_state = cloneBoard(state);
+            new_state.move(position, new_position);
+            Node child = new Node(new_state, this, new Position[] {position, new_position});
+            move_node_map.put(new_move, child);
+        }
+        else throw new Exception();
+    }
+
     public void populateChildren()
     {
         has_populated_children = true;
@@ -63,16 +77,7 @@ public class Node {
                     try 
                     { 
                         Position new_position = state.step(piece, step, position); 
-                        ArrayList<Position> new_move = new ArrayList<Position>(); 
-                        new_move.add(position); new_move.add(new_position);
-        
-                        if (!move_node_map.containsKey(new_move) && state.isLegalMove(position, new_position))
-                        {
-                            Board new_state = cloneBoard(state);
-                            new_state.move(position, new_position);
-                            Node child = new Node(new_state, this, new Position[] {position, new_position});
-                            move_node_map.put(new_move, child);
-                        }
+                        addChild(position, new_position);
                     }
                     catch (Exception e) {}
                 }
@@ -90,19 +95,8 @@ public class Node {
                         {
                             new_position = state.step(piece, step, new_position, reverse);
                             if (new_position.getColour() != position.getColour()) reverse = true;
-                            ArrayList<Position> new_move = new ArrayList<Position>(); 
-                            new_move.add(position); new_move.add(new_position);
-
-                            if (!move_node_map.containsKey(new_move) && state.isLegalMove(position, new_position))
-                            {
-                                Board new_state = cloneBoard(state);
-                                new_state.move(position, new_position);
-                                Node child = new Node(new_state, this, new Position[] {position, new_position});
-                                move_node_map.put(new_move, child);
-                            }
-                            else break;
+                            addChild(position, new_position);
                         }
-                        
                         catch (Exception e) {break;} // moved off board 
                     }
                 }
