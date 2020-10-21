@@ -88,35 +88,13 @@ public class Node {
                 for (Direction[] step: steps)
                 {
                     Position new_position = position;
-                    Position intermediate_position;
                     boolean reverse = false; // when entering another player's part of the board, reverse the directions
-                    boolean tried_switch = false; // when Bishop or Queen gets to centre of board and can go other directions
                     for (int i = 0; i < num_steps; i++)
                     {
                         try
                         {
-                            intermediate_position = state.step(piece, step, new_position, reverse);
-                            if (intermediate_position.getColour() != position.getColour()) 
-                            {
-                                // when Bishop or Queen gets to centre of board and can go other directions
-                                if (!tried_switch && piece.getType() != PieceType.ROOK && step.length > 1)
-                                {
-                                    tried_switch = true;
-                                    Direction[] new_step = new Direction[] {step[1], step[0]};
-                                    for (int j = i; j < num_steps; j++)
-                                    {
-                                        try 
-                                        {
-                                            new_position = state.step(piece, new_step, new_position, reverse);
-                                            addChild(position, new_position);
-                                            reverse = true;
-                                        }
-                                        catch (Exception e) {break;}
-                                    }
-                                }
-                                reverse = true;
-                            }
-                            new_position = intermediate_position;
+                            new_position = state.step(piece, step, new_position, reverse);
+                            if (new_position.getColour() != position.getColour()) reverse = true;
                             addChild(position, new_position);
                         }
                         catch (Exception e) {break;} // moved off board 
@@ -166,40 +144,12 @@ public class Node {
             {
                 Position new_position = position;
                 boolean reverse = false;
-                boolean tried_switch = false;
-                Position intermediate_position;
                 for (int i = 0; i < num_steps; i++)
                 {
                     try
                     {
-                        intermediate_position = state.step(piece, step, new_position, reverse);
-                        if (intermediate_position.getColour() != position.getColour()) 
-                        {
-                            if (piece.getType() != PieceType.ROOK && !tried_switch && step.length > 1)
-                            {
-                                tried_switch = true;
-                                Direction[] new_step = new Direction[] {step[1], step[0]};
-                                for (int j = i; j < num_steps; j++)
-                                {
-                                    try
-                                    {
-                                        new_position = state.step(piece, new_step, new_position, reverse);
-                                        ArrayList<Position> new_move = new ArrayList<Position>(); 
-                                        new_move.add(position); new_move.add(new_position);
-                                        if (!list_of_moves.contains(new_move) && state.isLegalMove(position, new_position))
-                                        {
-                                            list_of_moves.add(new_move);
-                                            moves.add(new Position[] {position, new_position});
-                                            reverse = true;
-                                        }
-                                        
-                                    }
-                                    catch (Exception e) {break;}
-                                }
-                            }
-                            reverse = true;
-                        }
-                        new_position = intermediate_position;
+                        new_position = state.step(piece, step, new_position, reverse);
+                        if (new_position.getColour() != position.getColour()) reverse = true;
                         ArrayList<Position> new_move = new ArrayList<Position>(); 
                         new_move.add(position); new_move.add(new_position);
 
