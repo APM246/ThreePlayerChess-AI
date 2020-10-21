@@ -8,12 +8,12 @@ public class Agent22704805 extends Agent {
 
     static final double TEMPERATURE = Math.sqrt(2);
     private long MAX_TIME;
-    private Node root;
+    private Node root;int depth;
 
     public Agent22704805() {}
 
     public Position[] playMove(Board board) {
-        int move_count = board.getMoveCount();
+        int move_count = board.getMoveCount();depth=0;
 
         // setting up root for first time
         if (move_count < 3)
@@ -44,15 +44,15 @@ public class Agent22704805 extends Agent {
 
         MAX_TIME = board.getTimeLeft(root.colour)/25; // anytime algorithm, limit set to 1/25th of time left
         // Monte Carlo Tree Search
-        long current_time = System.currentTimeMillis();
+        long current_time = System.currentTimeMillis();double num_iterations=0;
         while (System.currentTimeMillis() - current_time < MAX_TIME)
         {
             Node leaf = selectChild(root);
             Colour winner = simulateGame(leaf);
-            backPropagate(leaf, root, winner);
+            backPropagate(leaf, root, winner);num_iterations++;
         }
 
-        root = selectBestNode(root);
+        root = selectBestNode(root);System.out.println("woah: " + depth/num_iterations);
         return root.last_move;
     }
 
@@ -60,7 +60,7 @@ public class Agent22704805 extends Agent {
      * recursively select child node using Upper Confidence Bound algorithm (selection policy) until leaf node reached
      */
     public Node selectChild(Node current_node)
-    {int depth = 0;
+    {
         while (true)
         {depth++;
             double max = -1;
@@ -70,7 +70,7 @@ public class Agent22704805 extends Agent {
             for (ArrayList<Position> move: keys)
             {
                 Node child = current_node.move_node_map.get(move);
-                if (child.num_visits == 0) {System.out.println("depth is" + depth); return child;} // new unvisited node found
+                if (child.num_visits == 0) return child; // new unvisited node found
 
                 // calculate UCB1 value for each child
                 double exploration = Math.sqrt(Math.log(current_node.num_visits)/child.num_visits);
@@ -83,7 +83,7 @@ public class Agent22704805 extends Agent {
             }
 
             current_node = current_node.move_node_map.get(best_child_key);
-            if (current_node.state.gameOver()) {System.out.println("depth is" + depth); return current_node;} // terminal state reached
+            if (current_node.state.gameOver()) return current_node; // terminal state reached
             if (!current_node.has_populated_children) current_node.populateChildren(); 
         }
     }
