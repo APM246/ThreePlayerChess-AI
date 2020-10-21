@@ -31,8 +31,13 @@ public class Agent22704805 extends Agent {
                 ArrayList<Position> move_arr = new ArrayList<Position>();
                 move_arr.add(move[0]); move_arr.add(move[1]);
                 if (!root.has_populated_children) root.populateChildren();
-                Node node = root.move_node_map.get(move_arr);
-                root = node;
+                root = root.move_node_map.get(move_arr);
+                // For some reason one of the last 2 moves is not recognised, thus start again with an empty game tree
+                if (root == null)
+                {
+                    root = new Node(board, null, null);
+                    break;
+                }
             }
 
             if (!root.has_populated_children) root.populateChildren();
