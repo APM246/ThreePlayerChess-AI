@@ -6,12 +6,25 @@ import java.util.*;
 
 public class Agent22704805 extends Agent {
 
+    // UCT exploration constant
     static final double TEMPERATURE = Math.sqrt(2);
+    // maximum time spent per move
     private long MAX_TIME;
     private Node root;
 
     public Agent22704805() {}
 
+    /**
+     * Play a move in the game. 
+     * The agent is given a Board Object representing the position of all pieces, 
+     * the history of the game and whose turn it is. 
+     * They respond with a move represented by a pair (two element array) of positions: 
+     * the start and the end position of the move.
+     * @param board The representation of the game state.
+     * @return a two element array of Position objects, where the first element is the 
+     * current position of the piece to be moved, and the second element is the 
+     * position to move that piece to.
+     * **/
     public Position[] playMove(Board board) {
         int move_count = board.getMoveCount();
 
@@ -21,8 +34,8 @@ public class Agent22704805 extends Agent {
             root = new Node(board, null, null);
             root.populateChildren();
             MAX_TIME = 2000; // anytime algorithm, limit set to 2 seconds
-        }
-        // move root using last 2 moves
+        }      
+        // Examine the last 2 moves made and move the root downwards appropriately 
         else
         {
             for (int i = 2; i > 0; i--)
@@ -47,9 +60,9 @@ public class Agent22704805 extends Agent {
         long current_time = System.currentTimeMillis();
         while (System.currentTimeMillis() - current_time < MAX_TIME)
         {
-            Node leaf = selectChild(root);
-            Colour winner = simulateGame(leaf);
-            backPropagate(leaf, root, winner);
+            Node child = selectChild(root);
+            Colour winner = simulateGame(child);
+            backPropagate(child, root, winner);
         }
 
         root = selectBestNode(root);
@@ -57,7 +70,9 @@ public class Agent22704805 extends Agent {
     }
 
     /**
-     * recursively select child node using Upper Confidence Bound algorithm (selection policy) until leaf node reached
+     * Recursively select child node using Upper Confidence Bound for Trees algorithm until a leaf node reached
+     * @param current_node node to start search from
+     * @return an unvisited child node of the leaf node
      */
     public Node selectChild(Node current_node)
     {
@@ -89,28 +104,30 @@ public class Agent22704805 extends Agent {
     }
 
     /**
-     * perform random rollout from new unvisited node
-     * @param start
+     * Perform random rollout from node, by picking a random position and then 
+     * random move from the position each time
+     * @param start Node to start simulation from
+     * @return winner of rollout
      */
     public Colour simulateGame(Node start)
     {
         Board current = Node.cloneBoard(start.state);
         ArrayList<Position[]> all_moves;
         Random random_generator = new Random();
-
+        // keep making moves until game completes
         while (!current.gameOver())
         {
             do
             {
                 Object[] positions = current.getPositions(current.getTurn()).toArray();
                 int random_index = random_generator.nextInt(positions.length);
-                Position position = (Position) positions[random_index];
-                all_moves = Node.getLegalMovesForPosition(position, current);
+                Position position = (Position) positions[random_index]; // random position found
+                all_moves = getLegalMovesForPosition(position, current);
             }
-            while (all_moves.isEmpty());
+            while (all_moves.isEmpty()); // this position has no legal moves, thus try again
 
             int random_index = random_generator.nextInt(all_moves.size());
-            Position[] move = all_moves.get(random_index);
+            Position[] move = all_moves.get(random_index); // random move chosen
             try 
             {
                 current.move(move[0], move[1]);
@@ -122,10 +139,10 @@ public class Agent22704805 extends Agent {
     }
 
     /**
-     * back propagates result of match by updating win ratio and number of visits
-     * @param start
-     * @param root
-     * @param wonMatch
+     * Back propagates result of match by updating number of visits and possibly win ratio
+     * @param start first Node to update
+     * @param root last Node to update
+     * @param wonMatch winner of simulation
      */
     public void backPropagate(Node node, Node root, Colour winner)
     {
@@ -133,10 +150,16 @@ public class Agent22704805 extends Agent {
         {
             node.num_visits++;
             if (Colour.values()[(node.colour.ordinal() + 2) % 3] == winner) node.num_wins++;
-            node = node.parent;
+            node = node.parent; // move to parent and repeat
         }
     }
 
+    /**
+     * After time limit reached, examine all children of root and select the best child, i.e. the node
+     * with the highest win percentage
+     * @param root
+     * @return best child of root
+     */
     public Node selectBestNode(Node root)
     {
         Iterator<ArrayList<Position>> iterator = root.move_node_map.keySet().iterator();
@@ -156,6 +179,74 @@ public class Agent22704805 extends Agent {
         }
 
         return best_node;
+    }
+
+    /**
+     * Find all legal moves for a particular piece on the board. Used in rollouts.
+     * @param position position to examine
+     * @param state 
+     * @return all possible moves that can be made for given position
+     */
+    public static ArrayList<Position[]> getLegalMovesForPosition(Position position, Board state)
+    {
+        ArrayList<Position[]> moves = new ArrayList<Position[]>();
+        Piece piece = state.getPiece(position);
+        Direction[][] steps = piece.getType().getSteps();
+        int num_steps = piece.getType().getStepReps();
+        HashSet<ArrayList<Position>> list_of_moves = new HashSet<ArrayList<Position>>();
+            
+        if (num_steps == 1)
+        {
+            for (Direction[] step: steps)
+            {
+                try 
+                { 
+                    Position new_position = state.step(piece, step, position); 
+                    ArrayList<Position> new_move = new ArrayList<Position>(); 
+                    new_move.add(position); new_move.add(new_position);
+        
+                    if (!list_of_moves.contains(new_move) && state.isLegalMove(position, new_position))
+                    {
+                        list_of_moves.add(new_move);
+                        moves.add(new Position[] {position, new_position});
+                    }
+                }
+                catch (Exception e) {}
+            }
+        }
+
+        // only applies to Queen, Bishop and Rook
+        else 
+        {
+            for (Direction[] step: steps)
+            {
+                Position new_position = position;
+                boolean reverse = false;
+                for (int i = 0; i < num_steps; i++)
+                {
+                    try
+                    {
+                        new_position = state.step(piece, step, new_position, reverse);
+                        // another player's part of board has been entered
+                        if (new_position.getColour() != position.getColour()) reverse = true;
+                        ArrayList<Position> new_move = new ArrayList<Position>(); 
+                        new_move.add(position); new_move.add(new_position);
+
+                        // check that move has not already been added and that it is legal
+                        if (!list_of_moves.contains(new_move) && state.isLegalMove(position, new_position))
+                        {
+                            list_of_moves.add(new_move);
+                            moves.add(new Position[] {position, new_position});
+                        }
+                        else break;
+                    }
+                        
+                    catch (Exception e) {break;} // piece moved off board 
+                }
+            }
+        }
+        
+        return moves;
     }
 
     public String toString() {
