@@ -1,6 +1,0 @@
-BLUE: 22704805
-GREEN: Random 
-RED: Random   
-BLUE: BC2-BC3 t:570
-GREEN: GH2-GH3 t:0
-RED: RC2-RC4 t:0
