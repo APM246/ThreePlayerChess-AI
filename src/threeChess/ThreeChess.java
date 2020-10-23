@@ -249,6 +249,6 @@ public class ThreeChess{
     else if (args.length > 0 && args[0].equals("cheat")){
       playCheat();
     }
-    else tournament(bots,20,50,true,null);
+    else tournament(bots,100,10,true,null);
   }
 }
