@@ -7,7 +7,7 @@ An AI framework for playing three player chess, as part of the CITS3001 unit at 
 
 ![](init.png)
 
-The project will require you to research, implement and validate artifical intelligence for the board game ThreeChess. ThreeChess is a variation of chess played on a special board between three players, with the colours Blue, Green and Red. Each player takes turns moving their pieces, where the available moves depend on the type of piece. If your piece lands on a square occupied by an opponent's piece, the opponent's piece is removed from the board (captured) and the goal is to take one of your opponents' King. When a King is taken the game ends, and the person who took the King is the winner, the person who lost the King is the loser, and the third player neither wins nor loses.
+ThreeChess is a variation of chess played on a special board between three players, with the colours Blue, Green and Red. Each player takes turns moving their pieces, where the available moves depend on the type of piece. If your piece lands on a square occupied by an opponent's piece, the opponent's piece is removed from the board (captured) and the goal is to take one of your opponents' King. When a King is taken the game ends, and the person who took the King is the winner, the person who lost the King is the loser, and the third player neither wins nor loses.
 
 * * *
 
