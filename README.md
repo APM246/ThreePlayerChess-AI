@@ -72,10 +72,3 @@ To compile the files, in the root directory use javac -d bin src/threeChess/\*.j
 To run a basic game use java -cp bin/ threeChess.ThreeChess 
 
 * * *
-
-## Getting started
-
-There are many references for Chess AI and perfect information deterministic turn based board games in general. ThreeChess adds the complication of a third player. This makes techniques such as minimax and alpha-beta pruning less practical, since it assumes the worst of your opponents, and it is unlikely both opponents will target you (and if they do, there's not much you can doi about it.) The first step in designing a AI for the game is to play some games yourself and identify useful tactics. Once you have an idea of what makes a good position in the game, you can start work on an evaluation function, to give an approximate utility to a board position. You can then use that in a minimax search, a Monte Carlo tree search or a sequential decision problem. Some interesting references are included below, and we will add to this throughout semester.
-
-*   a [paper on Monte Carlo tree-search](http://teaching.csse.uwa.edu.au/units/CITS3001/project/2017/paper1.pdf).
-*   A Very good [project report](http://teaching.csse.uwa.edu.au/units/CITS3001/project/sampleReport.pdf) from a student in 2016 is also available
